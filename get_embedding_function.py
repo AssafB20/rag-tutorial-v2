@@ -1,10 +1,19 @@
-from langchain_community.embeddings.ollama import OllamaEmbeddings
-from langchain_community.embeddings.bedrock import BedrockEmbeddings
+import os
+from dotenv import load_dotenv
+from langchain_openai import OpenAIEmbeddings
 
 
-def get_embedding_function():
-    embeddings = BedrockEmbeddings(
-        credentials_profile_name="default", region_name="us-east-1"
+# Load environment variables from .env file
+load_dotenv()
+
+
+def get_embeddings():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY not found in .env file")
+        
+    embeddings = OpenAIEmbeddings(
+        model="text-embedding-3-small",  # This is OpenAI's latest and most efficient embedding model
+        openai_api_key=api_key
     )
-    # embeddings = OllamaEmbeddings(model="nomic-embed-text")
     return embeddings
